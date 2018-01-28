@@ -69,6 +69,9 @@ class Robot: public frc::IterativeRobot {
 		// new I2C object in order to manipulate Lidar
 		i2c_Lidar = new I2C(I2C::Port::kOnboard, 0x62);
 
+		// new timer object to monitor time
+		timer = new Timer();
+
 	}
 
 	void RobotInit() {
@@ -156,18 +159,53 @@ class Robot: public frc::IterativeRobot {
 
 	}
 
+	void driveForward() {
+
+		int distance = getDistance();
+		while (distance < 320) {
+
+			drive.ArcadeDrive(-0.5, 0.0);
+
+		}
+
+	}
+
+	void driveForward( std::String side ) {
+
+		if (side == "L") {
+
+			int distance = getDistance();
+			while (distance < 320) {
+
+				drive.ArcadeDrive(-0.5, 0.0);
+
+			}
+
+			timer.Start();
+			double time = timer.getTime();
+
+			while (time < 3) {
+
+				drive.ArcadeDrive(0.5, 1);
+
+			}
+
+			timer.Stop();
+
+		}
+
+	}
+
 	void AutonomousPeriodic() {
 	//	if (autoSelected == autoNameCustom) {
 			// Custom Auto goes here
 //		} else {
 			// Default Auto goes here
 	//	}
-		int distance = getDistance();
-		if (distance < 250) {
-			drive.ArcadeDrive(-0.5, 0);
-		} else {
-			drive.ArcadeDrive(0.0,0.0);
-		}
+
+
+		// drive straight 2.5 meters and stop
+		driveForward("L");
 
 
 
